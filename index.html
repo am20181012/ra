@@ -57,10 +57,14 @@
         </div>
 
         <div id="kategorije_put">
+            <input type="text" name="kategorija_id_put" id="kategorija_id_put" placeholder="Unesite id kategorije koju zelite da izmenite">
+            <br>
             <input type="text" name="kategorija_naziv_put" id="kategorija_naziv_put" placeholder="Unesite novi naziv kategorije">
         </div>
 
         <div id="novosti_put">
+            <input type="text" name="novosti_id_put" id="novosti_id_put" placeholder="Unesite id novosti koju zelite da izmenite">
+            <br>
             <input type="text" name="naslov_novosti_put" placeholder="Unesite novi naslov novosti">
             <br>
             <textarea name="tekst_novosti_put" id="tekst_novosti_put" cols="30" rows="10" placeholder="Unesite novi tekst novosti"></textarea>
@@ -68,10 +72,10 @@
 
             <label for="kategorija_odabir_put">Odaberite novu kategoriju</label>
             <select name="kategorija_odabir_put" id="kategorija_odabir_put">
-                <option value="k1">1</option>
-                <option value="k2">2</option>
-                <option value="k3">3</option>
-                <option value="k4">4</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
             </select>
         </div>
 
@@ -192,9 +196,9 @@
                             "tekst": $("#tekst_novosti").val(),
                             "kategorija_id": parseInt($("#kategorija_odabir").val())
                             };
-                            console.log(values);
-                            $.post("http://localhost/rest/novosti", JSON.stringify(values), function(data){
-                                alert("Odgovor od servera> " + data['poruka']);
+                        console.log(values);
+                        $.post("http://localhost/rest/novosti", JSON.stringify(values), function(data){
+                            alert("Odgovor od servera> " + data['poruka']);
                             });
                     }else{
                         var values = {
@@ -206,6 +210,63 @@
                             });
                     }
                     break;
+                
+                case "put":
+                    if(tabela=="radio_novosti"){
+                        var values = {
+                            "naslov":$("input[name=naslov_novosti_put]").val(),
+                            "tekst": $("#tekst_novosti_put").val(),
+                            "kategorija_id" : parseInt($("#kategorija_odabir_put").val())
+                            };
+                        var id = parseInt($("input[name=novosti_id_put]").val());
+                        console.log(values);
+                        $.ajax({
+                            url: "http://localhost/rest/novosti/" + id,
+                            data: JSON.stringify(values),
+                            type:"PUT",
+                            success: function(data){
+                                alert("Odgovor od servera> " + data['poruka']);
+                            }
+                        });
+                    }else{
+                        var values = {
+                            "kategorija_id" : parseInt($("#kategorija_id_put").val()),
+                            "kategorija": $("input[name=kategorija_naziv_put]").val()
+                            };
+                        console.log(values);
+                        $.ajax({
+                            url: "http://localhost/rest/kategorije/" + values.kategorija_id,
+                            data: JSON.stringify(values),
+                            type:"PUT",
+                            success: function(data){
+                                alert("Odgovor od servera> " + data['poruka']);
+                            }
+                        });
+                    }
+                    break;
+
+                case "delete":
+                    var id =  $("input[name=brisanje]").val();
+                    console.log(values);
+                    if(tabela=="radio_novosti"){
+                        $.ajax({
+                            url: "http://localhost/rest/novosti/" + id,
+                            type:"DELETE",
+                            success: function(data){
+                                alert("Odgovor od servera> " + data['poruka']);
+                            }
+                        });
+                    }else{
+                        $.ajax({
+                            url: "http://localhost/rest/kategorije/" + id,
+                            type:"DELETE",
+                            success: function(data){
+                                alert("Odgovor od servera> " + data['poruka']);
+                            }
+                        });
+                    }
+                    break;
+
                 default:
                     console.log("def");
             }
